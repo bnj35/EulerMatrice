@@ -1,0 +1,22 @@
+[project]
+name = "graph"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas",
+    "numpy",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "jupyter", "jupyterlab"]
+
+[project.scripts]
+graph-analyze = "graph.graph:main"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["graph"]
