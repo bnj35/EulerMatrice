@@ -1,18 +1,18 @@
 """
-Module pour l'analyse de graphes eulériens.
+Module for Eulerian graph analysis.
 
-Ce module fournit une classe Graph qui permet de :
-- Vérifier si un graphe est eulérien
-- Déterminer s'il s'agit d'une chaîne ou d'un cycle eulérien
-- Générer une matrice d'adjacence
-- Trouver un chemin eulérien s'il existe
+This module provides a Graph class that allows to:
+- Check if a graph is Eulerian
+- Determine if it's an Eulerian chain or cycle
+- Generate an adjacency matrix
+- Find an Eulerian path if it exists
 
-Structure d'entrée recommandée :
-1. Liste d'arêtes : [(u1, v1), (u2, v2), ...] pour graphe non orienté
-2. Liste d'arcs : [(u1, v1), (u2, v2), ...] pour graphe orienté
-3. Dictionnaire d'adjacence : {sommet: [voisins], ...}
+Recommended input structure:
+1. Edge list: [(u1, v1), (u2, v2), ...] for undirected graph
+2. Arc list: [(u1, v1), (u2, v2), ...] for directed graph
+3. Adjacency dictionary: {vertex: [neighbors], ...}
 
-Complexité : O(V + E) pour la vérification, O(E) pour trouver le chemin
+Complexity: O(V + E) for verification, O(E) to find the path
 """
 
 from collections import defaultdict, deque
@@ -21,20 +21,20 @@ from typing import List, Tuple, Dict, Set, Optional, Union
 
 class Graph:
     """
-    Classe pour représenter et analyser un graphe.
+    Class to represent and analyze a graph.
     
-    Supporte les graphes orientés et non orientés.
-    Permet l'analyse des propriétés eulériennes.
+    Supports directed and undirected graphs.
+    Allows analysis of Eulerian properties.
     """
     
     def __init__(self, edges: List[Tuple] = None, adjacency_dict: Dict = None, directed: bool = False):
         """
-        Initialise le graphe.
+        Initialize the graph.
         
         Args:
-            edges: Liste d'arêtes/arcs sous forme de tuples (u, v)
-            adjacency_dict: Dictionnaire d'adjacence {sommet: [voisins]}
-            directed: True si le graphe est orienté, False sinon
+            edges: List of edges/arcs as tuples (u, v)
+            adjacency_dict: Adjacency dictionary {vertex: [neighbors]}
+            directed: True if the graph is directed, False otherwise
         """
         self.directed = directed
         self.adjacency_list = defaultdict(list)
@@ -46,7 +46,7 @@ class Graph:
             self._build_from_dict(adjacency_dict)
     
     def _build_from_edges(self, edges: List[Tuple]):
-        """Construit le graphe à partir d'une liste d'arêtes."""
+        """Build the graph from an edge list."""
         for edge in edges:
             u, v = edge[0], edge[1]
             self.vertices.add(u)
@@ -57,7 +57,7 @@ class Graph:
                 self.adjacency_list[v].append(u)
     
     def _build_from_dict(self, adjacency_dict: Dict):
-        """Construit le graphe à partir d'un dictionnaire d'adjacence."""
+        """Build the graph from an adjacency dictionary."""
         for vertex, neighbors in adjacency_dict.items():
             self.vertices.add(vertex)
             for neighbor in neighbors:
@@ -65,15 +65,15 @@ class Graph:
                 self.adjacency_list[vertex].append(neighbor)
     
     def get_degree(self, vertex) -> int:
-        """Retourne le degré d'un sommet (graphe non orienté)."""
+        """Return the degree of a vertex (undirected graph)."""
         if self.directed:
-            raise ValueError("Utilisez get_in_degree() et get_out_degree() pour un graphe orienté")
+            raise ValueError("Use get_in_degree() and get_out_degree() for a directed graph")
         return len(self.adjacency_list[vertex])
     
     def get_in_degree(self, vertex) -> int:
-        """Retourne le degré entrant d'un sommet (graphe orienté)."""
+        """Return the in-degree of a vertex (directed graph)."""
         if not self.directed:
-            raise ValueError("Utilisez get_degree() pour un graphe non orienté")
+            raise ValueError("Use get_degree() for an undirected graph")
         
         in_degree = 0
         for v in self.vertices:
@@ -82,26 +82,26 @@ class Graph:
         return in_degree
     
     def get_out_degree(self, vertex) -> int:
-        """Retourne le degré sortant d'un sommet (graphe orienté)."""
+        """Return the out-degree of a vertex (directed graph)."""
         if not self.directed:
-            raise ValueError("Utilisez get_degree() pour un graphe non orienté")
+            raise ValueError("Use get_degree() for an undirected graph")
         return len(self.adjacency_list[vertex])
     
     def is_connected(self) -> bool:
-        """Vérifie si le graphe est connexe (non orienté) ou faiblement connexe (orienté)."""
+        """Check if the graph is connected (undirected) or weakly connected (directed)."""
         if not self.vertices:
             return True
         
-        # Pour un graphe orienté, on vérifie la connexité faible
+        # For a directed graph, check weak connectivity
         if self.directed:
-            # Créer un graphe non orienté équivalent
+            # Create an equivalent undirected graph
             undirected_adj = defaultdict(list)
             for u in self.adjacency_list:
                 for v in self.adjacency_list[u]:
                     undirected_adj[u].append(v)
                     undirected_adj[v].append(u)
             
-            # DFS sur le graphe non orienté
+            # DFS on the undirected graph
             visited = set()
             start = next(iter(self.vertices))
             stack = [start]
@@ -117,7 +117,7 @@ class Graph:
             return len(visited) == len(self.vertices)
         
         else:
-            # DFS pour graphe non orienté
+            # DFS for undirected graph
             visited = set()
             start = next(iter(self.vertices))
             stack = [start]
@@ -134,13 +134,13 @@ class Graph:
     
     def is_eulerian(self) -> Tuple[bool, str]:
         """
-        Vérifie si le graphe est eulérien.
+        Check if the graph is Eulerian.
         
         Returns:
-            Tuple (is_eulerian, type) où type peut être :
-            - "cycle" : cycle eulérien (tous les sommets de degré pair)
-            - "chain" : chaîne eulérienne (exactement 2 sommets de degré impair)
-            - "none" : pas eulérien
+            Tuple (is_eulerian, type) where type can be:
+            - "cycle": Eulerian cycle (all vertices have even degree)
+            - "chain": Eulerian chain (exactly 2 vertices have odd degree)
+            - "none": not Eulerian
         """
         if not self.is_connected():
             return False, "none"
@@ -151,7 +151,7 @@ class Graph:
             return self._is_eulerian_undirected()
     
     def _is_eulerian_undirected(self) -> Tuple[bool, str]:
-        """Vérifie les propriétés eulériennes pour un graphe non orienté."""
+        """Check Eulerian properties for an undirected graph."""
         odd_degree_vertices = []
         
         for vertex in self.vertices:
@@ -166,11 +166,11 @@ class Graph:
             return False, "none"
     
     def _is_eulerian_directed(self) -> Tuple[bool, str]:
-        """Vérifie les propriétés eulériennes pour un graphe orienté."""
-        # Vérifier si tous les sommets ont degré entrant = degré sortant
+        """Check Eulerian properties for a directed graph."""
+        # Check if all vertices have in-degree = out-degree
         all_balanced = True
-        start_vertices = []  # Sommets avec out_degree - in_degree = 1
-        end_vertices = []    # Sommets avec in_degree - out_degree = 1
+        start_vertices = []  # Vertices with out_degree - in_degree = 1
+        end_vertices = []    # Vertices with in_degree - out_degree = 1
         
         for vertex in self.vertices:
             in_deg = self.get_in_degree(vertex)
@@ -194,10 +194,10 @@ class Graph:
     
     def get_adjacency_matrix(self) -> List[List[int]]:
         """
-        Génère la matrice d'adjacence du graphe.
+        Generate the adjacency matrix of the graph.
         
         Returns:
-            Matrice d'adjacence sous forme de liste de listes
+            Adjacency matrix as a list of lists
         """
         vertices_list = sorted(list(self.vertices))
         n = len(vertices_list)
@@ -209,16 +209,16 @@ class Graph:
             i = vertex_to_index[vertex]
             for neighbor in self.adjacency_list[vertex]:
                 j = vertex_to_index[neighbor]
-                matrix[i][j] += 1  # +1 pour gérer les arêtes multiples
+                matrix[i][j] += 1  # +1 to handle multiple edges
         
         return matrix, vertices_list
     
     def find_eulerian_path(self) -> Optional[List]:
         """
-        Trouve un chemin eulérien s'il existe (algorithme de Hierholzer).
+        Find an Eulerian path if it exists (Hierholzer's algorithm).
         
         Returns:
-            Liste des sommets du chemin eulérien, ou None si inexistant
+            List of vertices in the Eulerian path, or None if non-existent
         """
         is_eul, eul_type = self.is_eulerian()
         if not is_eul:
@@ -230,25 +230,25 @@ class Graph:
             return self._hierholzer_undirected(eul_type)
     
     def _hierholzer_undirected(self, eul_type: str) -> List:
-        """Algorithme de Hierholzer pour graphe non orienté."""
-        # Copie de la liste d'adjacence pour modification
+        """Hierholzer's algorithm for undirected graph."""
+        # Copy of adjacency list for modification
         adj_copy = defaultdict(list)
         for u in self.adjacency_list:
             adj_copy[u] = self.adjacency_list[u].copy()
         
-        # Choisir le sommet de départ
+        # Choose starting vertex
         if eul_type == "chain":
-            # Commencer par un sommet de degré impair
+            # Start with a vertex of odd degree
             start = None
             for vertex in self.vertices:
                 if len(adj_copy[vertex]) % 2 == 1:
                     start = vertex
                     break
         else:
-            # Cycle : commencer par n'importe quel sommet
+            # Cycle: start with any vertex
             start = next(iter(self.vertices))
         
-        # Algorithme de Hierholzer
+        # Hierholzer's algorithm
         circuit = []
         path = [start]
         
@@ -256,7 +256,7 @@ class Graph:
             curr = path[-1]
             if adj_copy[curr]:
                 next_vertex = adj_copy[curr].pop()
-                adj_copy[next_vertex].remove(curr)  # Supprimer l'arête inverse
+                adj_copy[next_vertex].remove(curr)  # Remove reverse edge
                 path.append(next_vertex)
             else:
                 circuit.append(path.pop())
@@ -264,25 +264,25 @@ class Graph:
         return circuit[::-1]
     
     def _hierholzer_directed(self, eul_type: str) -> List:
-        """Algorithme de Hierholzer pour graphe orienté."""
-        # Copie de la liste d'adjacence pour modification
+        """Hierholzer's algorithm for directed graph."""
+        # Copy of adjacency list for modification
         adj_copy = defaultdict(list)
         for u in self.adjacency_list:
             adj_copy[u] = self.adjacency_list[u].copy()
         
-        # Choisir le sommet de départ
+        # Choose starting vertex
         if eul_type == "chain":
-            # Commencer par le sommet avec out_degree - in_degree = 1
+            # Start with vertex where out_degree - in_degree = 1
             start = None
             for vertex in self.vertices:
                 if self.get_out_degree(vertex) - self.get_in_degree(vertex) == 1:
                     start = vertex
                     break
         else:
-            # Circuit : commencer par n'importe quel sommet
+            # Circuit: start with any vertex
             start = next(iter(self.vertices))
         
-        # Algorithme de Hierholzer
+        # Hierholzer's algorithm
         circuit = []
         path = [start]
         
@@ -297,57 +297,57 @@ class Graph:
         return circuit[::-1]
     
     def print_analysis(self):
-        """Affiche une analyse complète du graphe."""
-        print(f"Graphe {'orienté' if self.directed else 'non orienté'}")
-        print(f"Sommets: {sorted(list(self.vertices))}")
-        print(f"Nombre de sommets: {len(self.vertices)}")
+        """Display a complete analysis of the graph."""
+        print(f"Graph {'directed' if self.directed else 'undirected'}")
+        print(f"Vertices: {sorted(list(self.vertices))}")
+        print(f"Number of vertices: {len(self.vertices)}")
         
-        # Nombre d'arêtes
+        # Number of edges
         edge_count = sum(len(neighbors) for neighbors in self.adjacency_list.values())
         if not self.directed:
             edge_count //= 2
-        print(f"Nombre d'arêtes: {edge_count}")
+        print(f"Number of edges: {edge_count}")
         
-        print(f"Connexe: {'Oui' if self.is_connected() else 'Non'}")
+        print(f"Connected: {'Yes' if self.is_connected() else 'No'}")
         
         is_eul, eul_type = self.is_eulerian()
         if is_eul:
             if eul_type == "cycle":
-                print("Type eulérien: Cycle eulérien (circuit)")
+                print("Eulerian type: Eulerian cycle (circuit)")
             else:
-                print("Type eulérien: Chaîne eulérienne (trail)")
+                print("Eulerian type: Eulerian chain (trail)")
         else:
-            print("Type eulérien: Non eulérien")
+            print("Eulerian type: Non-Eulerian")
         
-        # Matrice d'adjacence
+        # Adjacency matrix
         matrix, vertices_order = self.get_adjacency_matrix()
-        print(f"\nMatrice d'adjacence (ordre: {vertices_order}):")
+        print(f"\nAdjacency matrix (order: {vertices_order}):")
         for row in matrix:
             print(row)
         
-        # Chemin eulérien
+        # Eulerian path
         path = self.find_eulerian_path()
         if path:
-            print(f"\nChemin eulérien: {' -> '.join(map(str, path))}")
+            print(f"\nEulerian path: {' -> '.join(map(str, path))}")
         else:
-            print("\nAucun chemin eulérien trouvé")
+            print("\nNo Eulerian path found")
 
 
-# Exemples d'utilisation
+# Usage examples
 if __name__ == "__main__":
-    print("=== Exemple 1: Cycle eulérien (carré) ===")
+    print("=== Example 1: Eulerian cycle (square) ===")
     edges_square = [('A', 'B'), ('B', 'C'), ('B', 'D'), ('B', 'D'), ('C', 'D'), ('C', 'D'), ('C', 'A')]
     g1 = Graph(edges=edges_square, directed=False)
     g1.print_analysis()
     
     print("\n" + "="*50)
-    print("=== Exemple 2: Chaîne eulérienne ===")
+    print("=== Example 2: Eulerian chain ===")
     edges_path = [('A', 'B'), ('B', 'C'), ('C', 'D'), ('D', 'B')]
     g2 = Graph(edges=edges_path, directed=False)
     g2.print_analysis()
     
     print("\n" + "="*50)
-    print("=== Exemple 3: Non eulérien ===")
+    print("=== Example 3: Non-Eulerian ===")
     edges_star = [('A', 'B'), ('A', 'C'), ('A', 'D')]
     g3 = Graph(edges=edges_star, directed=False)
     g3.print_analysis()
