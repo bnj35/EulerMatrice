@@ -335,19 +335,24 @@ class Graph:
 
 # Usage examples
 if __name__ == "__main__":
-    print("=== Example 1: Eulerian cycle (square) ===")
-    edges_square = [('A', 'B'), ('B', 'C'), ('B', 'D'), ('B', 'D'), ('C', 'D'), ('C', 'D'), ('C', 'A')]
-    g1 = Graph(edges=edges_square, directed=False)
+    # print("=== Example 1: Eulerian cycle (square) ===")
+    # edges_square = [('A', 'B'), ('B', 'C'), ('B', 'D'), ('B', 'D'), ('C', 'D'), ('C', 'D'), ('C', 'A')]
+    # g1 = Graph(edges=edges_square, directed=False)
+    # g1.print_analysis()
+    
+    # print("\n" + "="*50)
+    # print("=== Example 2: Eulerian chain ===")
+    # edges_path = [('A', 'B'), ('B', 'C'), ('C', 'D'), ('D', 'B')]
+    # g2 = Graph(edges=edges_path, directed=True)
+    # g2.print_analysis()
+    
+    # print("\n" + "="*50)
+    # print("=== Example 3: Non-Eulerian ===")
+    # edges_star = [('A', 'B'), ('A', 'C'), ('A', 'D')]
+    # g3 = Graph(edges=edges_star, directed=False)
+    # g3.print_analysis()
+
+    print("=== resolution du plan")
+    carrefours = [('A', 'B'), ('A', 'C'), ('B', 'C'), ('C', 'D'), ('C', 'D'), ('B', 'D'), ('B', 'D')]
+    g1 = Graph(edges=carrefours, directed=False)
     g1.print_analysis()
-    
-    print("\n" + "="*50)
-    print("=== Example 2: Eulerian chain ===")
-    edges_path = [('A', 'B'), ('B', 'C'), ('C', 'D'), ('D', 'B')]
-    g2 = Graph(edges=edges_path, directed=True)
-    g2.print_analysis()
-    
-    print("\n" + "="*50)
-    print("=== Example 3: Non-Eulerian ===")
-    edges_star = [('A', 'B'), ('A', 'C'), ('A', 'D')]
-    g3 = Graph(edges=edges_star, directed=False)
-    g3.print_analysis()
