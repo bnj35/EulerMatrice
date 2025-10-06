@@ -343,7 +343,7 @@ if __name__ == "__main__":
     print("\n" + "="*50)
     print("=== Example 2: Eulerian chain ===")
     edges_path = [('A', 'B'), ('B', 'C'), ('C', 'D'), ('D', 'B')]
-    g2 = Graph(edges=edges_path, directed=False)
+    g2 = Graph(edges=edges_path, directed=True)
     g2.print_analysis()
     
     print("\n" + "="*50)
