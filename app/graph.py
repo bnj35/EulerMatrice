@@ -353,6 +353,6 @@ if __name__ == "__main__":
     # g3.print_analysis()
 
     print("=== resolution du plan")
-    carrefours = [('A', 'B'), ('A', 'C'), ('B', 'C'), ('C', 'D'), ('C', 'D'), ('B', 'D'), ('B', 'D')]
+    carrefours =  [('1', '2'), ('1', '5'), ('2', '4'), ('4', '5'), ('4', '7'), ('4', '3'), ('5', '7'), ('5', '6'), ('6', '7'), ('7', '8'), ('8', '9'), ('9', '10'), ('10', '3')]
     g1 = Graph(edges=carrefours, directed=False)
     g1.print_analysis()
